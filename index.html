@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificados — Fundación ComLatam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f4f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+      color: #1a1a1a;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 540px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      margin-top: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .logo-text {
+      font-size: 13px;
+      color: #888;
+      letter-spacing: 0.3px;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+      color: #1a1a1a;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .field { margin-bottom: 1.25rem; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      color: #1a1a1a;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus, input[type="email"]:focus {
+      outline: none;
+      border-color: #999;
+    }
+
+    #dni-input { font-size: 20px; letter-spacing: 3px; }
+
+    .error-msg {
+      font-size: 12px;
+      color: #c0392b;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .progress-bar {
+      height: 3px;
+      background: #eee;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #1a1a1a;
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+
+    .person-card {
+      background: #f8f7f3;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .person-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #1a1a1a;
+    }
+
+    .person-detail {
+      font-size: 13px;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    .question-counter {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      color: #1a1a1a;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #aaa;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 8px; }
+
+    .option-btn {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #1a1a1a;
+      transition: all 0.1s;
+      line-height: 1.4;
+    }
+
+    .option-btn:hover { background: #f8f7f3; }
+
+    .option-btn.selected {
+      background: #f8f7f3;
+      border-color: #999;
+      font-weight: 500;
+    }
+
+    .star-row { display: flex; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+
+    .star-btn {
+      width: 42px;
+      height: 42px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s;
+      color: #999;
+    }
+
+    .star-btn:hover { background: #f8f7f3; }
+
+    .star-btn.selected {
+      background: #f8f7f3;
+      border-color: #999;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .star-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      color: #1a1a1a;
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus { outline: none; border-color: #999; }
+
+    .nav-row { display: flex; gap: 10px; margin-top: 1.5rem; }
+
+    .btn-back {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      background: transparent;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #666;
+      transition: background 0.1s;
+    }
+
+    .btn-back:hover { background: #f8f7f3; }
+
+    .btn-next {
+      flex: 1;
+      padding: 13px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-next:hover { opacity: 0.82; }
+    .btn-next:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .success-icon {
+      width: 52px;
+      height: 52px;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 22px;
+      color: #1a1a1a;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-dl {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.15s;
+      margin-top: 0.5rem;
+    }
+
+    .btn-dl:hover { opacity: 0.82; }
+
+    footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    footer a { color: #bbb; text-decoration: none; }
+    footer a:hover { color: #888; }
+
+    @media (max-width: 480px) {
+      #app { padding: 1.75rem 1.25rem; border-radius: 12px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="logo">
+    <div class="logo-mark">CL</div>
+    <span class="logo-text">Fundación ComLatam</span>
+  </div>
+
+  <!-- PANTALLA 1: DNI -->
+  <div class="screen active" id="screen-dni">
+    <h1>Descargá tu certificado</h1>
+    <p class="subtitle">Ingresá tu DNI para verificar tu participación en <em>IA para la transformación pedagógica</em>. Luego completás una breve encuesta y lo descargás.</p>
+    <div class="field">
+      <label for="dni-input">Número de DNI (sin puntos ni espacios)</label>
+      <input type="text" id="dni-input" placeholder="Ej: 30123456" maxlength="12" />
+      <p class="error-msg" id="dni-error">No encontramos ese DNI. Verificá el número e intentá de nuevo.</p>
+    </div>
+    <button class="btn-primary" id="btn-check-dni">Continuar</button>
+  </div>
+
+  <!-- PANTALLA 2: ENCUESTA -->
+  <div class="screen" id="screen-survey">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="person-card">
+      <p class="person-name" id="person-name-display"></p>
+      <p class="person-detail">Completá la encuesta para descargar tu certificado</p>
+    </div>
+    <div id="question-container"></div>
+    <div class="nav-row">
+      <button class="btn-back" id="btn-prev" style="display:none">Anterior</button>
+      <button class="btn-next" id="btn-next" disabled>Siguiente</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA 3: ÉXITO -->
+  <div class="screen" id="screen-success">
+    <div class="success-icon">✓</div>
+    <h1>¡Muchas gracias!</h1>
+    <p class="subtitle">Tu encuesta fue registrada. Ya podés descargar tu certificado.</p>
+    <div class="person-card">
+      <p class="person-name" id="success-name"></p>
+      <p class="person-detail">IA para la transformación pedagógica · 20 hs · marzo 2026</p>
+    </div>
+    <a id="btn-download" class="btn-dl" href="#" target="_blank">Descargar certificado</a>
+  </div>
+
+  <footer>
+    <a href="https://comlatam.org" target="_blank">comlatam.org</a> · Córdoba, Argentina
+  </footer>
+</div>
+
+<script>
+  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdGQi99NxDTU8nl2FF_NrKLwDZSmekwsN8xTqz3BZD2tSxpVQ/formResponse";
+
+  const E = {
+    apellido:      "entry.2079390705",
+    nombre:        "entry.136181443",
+    organizacion:  "entry.36899376",
+    cargo:         "entry.1378441773",
+    mail:          "entry.691470650",
+    q1:            "entry.1161274681",
+    q2:            "entry.2077166556",
+    q3:            "entry.791226173",
+    q4:            "entry.852570825",
+    q5:            "entry.1669579672",
+    q6:            "entry.1548274795",
+    q7:            "entry.748106932",
+    q8:            "entry.1399378806",
+    q9:            "entry.175743774",
+    q10:           "entry.1825432805"
+  };
+
+  function dl(id) { return "https://drive.google.com/uc?export=download&id=" + id; }
+
+  const P = {
+    "22340614": { name:"Isolina Leonor Aldonate",       apellido:"Aldonate",       nombre:"Isolina Leonor",   file:dl("1usIocGssq9oggO-scDESC9LWSN4S3nhE") },
+    "22793890": { name:"Angela Alessio",                apellido:"Alessio",        nombre:"Angela",           file:dl("1ULv6yMrm5s9qjLxLuFwPMvVrzp_9fvdF") },
+    "25443555": { name:"Laura Ardini",                  apellido:"Ardini",         nombre:"Laura",            file:dl("1ZivubuTRmOyRC_ecuAUmFFN3NcfEk2Sb") },
+    "38411050": { name:"Virginia María Bianchi Wagner", apellido:"Bianchi Wagner", nombre:"Virginia María",   file:dl("1NCKCVkLOnb9Fixj7LujoZkzGhHEVNW3O") },
+    "36173501": { name:"Anahi Mabel Ferreyra",          apellido:"Ferreyra",       nombre:"Anahi Mabel",      file:dl("1wnE5wtHHCOZWUQynpyqAv5IDx1PXgJ9n") },
+    "27077793": { name:"Erica Franco",                  apellido:"Franco",         nombre:"Erica",            file:dl("1ZIr3ZOo1R2hpf94V54eQu0kgEAQZMlSR") },
+    "23825440": { name:"Irazoqui Cecilia",              apellido:"Irazoqui",       nombre:"Cecilia",          file:dl("18ZfdVIYPxxpHuvRmIu1GicElrlYnnN2W") },
+    "42783960": { name:"Melina Irazoqui",               apellido:"Irazoqui",       nombre:"Melina",           file:dl("1vnKpII2_VMwlzqXWK97KOrs6XWoUtCcp") },
+    "28853446": { name:"Joel Linossi",                  apellido:"Linossi",        nombre:"Joel",             file:dl("14t0sBugq8wy7iZKl-orYV2xCycuHy3Tv") },
+    "29252028": { name:"María Belén Manzanares",        apellido:"Manzanares",     nombre:"María Belén",      file:dl("1AfPLZO5_4eV_iP9NiwvjGbgRxgUqEALA") },
+    "42639622": { name:"Agustina Novarino",             apellido:"Novarino",       nombre:"Agustina",         file:dl("1wYc-fkrUC69TvhadL41WwcrlOOhMjpYM") },
+    "35658725": { name:"Pablo Paredes",                 apellido:"Paredes",        nombre:"Pablo",            file:dl("1rMb2gEl7ByskBqxd4ZO1wQNpmEJwrzax") },
+    "14856405": { name:"Liliana Beatriz Regis",         apellido:"Regis",          nombre:"Liliana Beatriz",  file:dl("1ihTqzTEoyDKfB4N9piSxih2vbfmt9BDb") },
+    "23835104": { name:"Malvina Eugenia Rodríguez",     apellido:"Rodríguez",      nombre:"Malvina Eugenia",  file:dl("1mJ0DZMGz36mbBmCvHfjXROy7dM-7gjoV") },
+    "20450411": { name:"Santiago Ruiz",                 apellido:"Ruiz",           nombre:"Santiago",         file:dl("1EyL454XDrjUIV_lZZ7JU4y3484HUqGjA") },
+    "22416982": { name:"Andrea Elena Silva",            apellido:"Silva",          nombre:"Andrea Elena",     file:dl("1SoDAFPyS_-gRzoWewSBtsWGbwUrTbQxC") },
+    "17114354": { name:"Mónica Viada",                  apellido:"Viada",          nombre:"Mónica",           file:dl("1nBgcMA_yVCiNlmUDbRCDnmWn7doQXYyz") }
+  };
+
+  const questions = [
+    { id:"apellido",     entry:E.apellido,     type:"text",    text:"Apellido",                                                                     placeholder:"",                          section:"Tus datos" },
+    { id:"nombre",       entry:E.nombre,       type:"text",    text:"Nombre",                                                                       placeholder:"" },
+    { id:"organizacion", entry:E.organizacion, type:"text",    text:"Organización o institución educativa",                                         placeholder:"" },
+    { id:"cargo",        entry:E.cargo,        type:"text",    text:"Cargo o profesión",                                                            placeholder:"" },
+    { id:"mail",         entry:E.mail,         type:"email",   text:"Correo electrónico",                                                           placeholder:"tu@mail.com" },
+    { id:"q1", entry:E.q1, type:"stars",  count:5, text:"¿Cómo valorás la calidad general del curso?",                                             min:"Muy bajo",        max:"Muy alto",           section:"Sobre el curso" },
+    { id:"q2", entry:E.q2, type:"options",     text:"¿Los contenidos respondieron a tus expectativas previas?",                                     options:["Definitivamente sí","Sí, en gran medida","Parcialmente","No, en absoluto"] },
+    { id:"q3", entry:E.q3, type:"stars",  count:7, text:"¿La facilitadora comunicó los temas con claridad?",                                       min:"Poco claro",      max:"Totalmente claro" },
+    { id:"q4", entry:E.q4, type:"options",     text:"¿En qué medida podés aplicar lo aprendido en tu práctica docente?",                           options:["Puedo aplicarlo inmediatamente y con confianza","Puedo aplicarlo con algo de apoyo","Necesito más práctica y recursos antes de aplicarlo","No creo poder aplicarlo en mi práctica actual"] },
+    { id:"q5", entry:E.q5, type:"text",        text:"¿Cuál de los módulos te resultó más valioso?",                                                placeholder:"Ej: Módulo II — Prompting" },
+    { id:"q6", entry:E.q6, type:"options",     text:"¿Tu institución cuenta con políticas o lineamientos sobre el uso de IA?",                     options:["Sí, tenemos políticas claras y establecidas","Estamos en proceso de desarrollarlas","No, actualmente no tenemos lineamientos","Desconozco"], section:"Tu institución" },
+    { id:"q7", entry:E.q7, type:"stars",  count:5, text:"¿Qué tan respaldada/o te sentís por tu institución para aplicar estos aprendizajes?",    min:"Nada respaldado/a", max:"Totalmente respaldado/a" },
+    { id:"q8", entry:E.q8, type:"options",     text:"¿Recomendarías este curso a colegas?",                                                        options:["Definitivamente sí","Probablemente sí","Tal vez","No"], section:"Para cerrar" },
+    { id:"q9", entry:E.q9, type:"options",     text:"¿Te podríamos contactar para un testimonio? Se publicará en los canales de ComLatam.",        options:["Si","No"] },
+    { id:"q10", entry:E.q10, type:"textarea",  text:"¿Querés dejarnos algún comentario, sugerencia o experiencia?",                               placeholder:"Tu opinión nos ayuda a mejorar… (opcional)", optional:true }
+  ];
+
+  let currentQ = 0, answers = {}, currentPerson = null;
+
+  function normalize(v) { return v.replace(/[\.\-\s]/g, "").trim(); }
+
+  function renderQuestion(i) {
+    const q = questions[i];
+    document.getElementById("progress-fill").style.width = Math.round((i + 1) / questions.length * 100) + "%";
+    document.getElementById("btn-prev").style.display = i > 0 ? "block" : "none";
+    document.getElementById("btn-next").textContent = i === questions.length - 1 ? "Enviar encuesta" : "Siguiente";
+
+    const cur = answers[q.id];
+    let html = "";
+    if (q.section) html += `<p class="section-label">${q.section}</p>`;
+    html += `<p class="question-counter">Pregunta ${i + 1} de ${questions.length}</p>
+             <p class="question-text">${q.text}${q.optional ? "" : " *"}</p>`;
+
+    if (q.type === "text" || q.type === "email") {
+      html += `<input type="${q.type}" id="inp-${q.id}" placeholder="${q.placeholder}" value="${cur || ""}" />`;
+    } else if (q.type === "stars") {
+      html += `<div class="star-row">`;
+      for (let n = 1; n <= q.count; n++) html += `<button class="star-btn ${cur == n ? "selected" : ""}" data-qid="${q.id}" data-val="${n}">${n}</button>`;
+      html += `</div><div class="star-labels"><span>${q.min}</span><span>${q.max}</span></div>`;
+    } else if (q.type === "options") {
+      html += `<div class="options">`;
+      q.options.forEach(o => html += `<button class="option-btn ${cur === o ? "selected" : ""}" data-qid="${q.id}" data-val="${o}">${o}</button>`);
+      html += `</div>`;
+    } else if (q.type === "textarea") {
+      html += `<textarea id="ta-${q.id}" placeholder="${q.placeholder}">${cur || ""}</textarea>`;
+    }
+
+    document.getElementById("question-container").innerHTML = html;
+
+    const inp = document.querySelector(`#inp-${q.id}`);
+    if (inp) { inp.addEventListener("input", () => { answers[q.id] = inp.value; updateBtn(); }); inp.focus(); }
+
+    document.querySelectorAll(".star-btn").forEach(b => b.addEventListener("click", () => { answers[b.dataset.qid] = b.dataset.val; renderQuestion(currentQ); }));
+    document.querySelectorAll(".option-btn").forEach(b => b.addEventListener("click", () => { answers[b.dataset.qid] = b.dataset.val; renderQuestion(currentQ); }));
+
+    const ta = document.querySelector(`#ta-${q.id}`);
+    if (ta) ta.addEventListener("input", () => { answers[q.id] = ta.value; });
+
+    updateBtn();
+  }
+
+  function updateBtn() {
+    const q = questions[currentQ];
+    const val = answers[q.id];
+    document.getElementById("btn-next").disabled = !q.optional && (val === undefined || val === "" || val === null);
+  }
+
+  document.getElementById("btn-check-dni").addEventListener("click", () => {
+    const dni = normalize(document.getElementById("dni-input").value);
+    const err = document.getElementById("dni-error");
+    if (P[dni]) {
+      err.style.display = "none";
+      currentPerson = { dni, ...P[dni] };
+      answers = { apellido: currentPerson.apellido, nombre: currentPerson.nombre };
+      document.getElementById("person-name-display").textContent = currentPerson.name;
+      document.getElementById("screen-dni").classList.remove("active");
+      document.getElementById("screen-survey").classList.add("active");
+      currentQ = 0;
+      renderQuestion(0);
+    } else {
+      err.style.display = "block";
+    }
+  });
+
+  document.getElementById("dni-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("btn-check-dni").click();
+  });
+
+  document.getElementById("btn-next").addEventListener("click", async () => {
+    const q = questions[currentQ];
+    const inp = document.querySelector(`#inp-${q.id}`); if (inp) answers[q.id] = inp.value;
+    const ta = document.querySelector(`#ta-${q.id}`);  if (ta)  answers[q.id] = ta.value;
+    if (currentQ < questions.length - 1) { currentQ++; renderQuestion(currentQ); }
+    else await submitSurvey();
+  });
+
+  document.getElementById("btn-prev").addEventListener("click", () => {
+    if (currentQ > 0) { currentQ--; renderQuestion(currentQ); }
+  });
+
+  async function submitSurvey() {
+    const btn = document.getElementById("btn-next");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span>Enviando…';
+
+    const params = questions.map(q => `${encodeURIComponent(q.entry)}=${encodeURIComponent(answers[q.id] || "")}`).join("&");
+
+    try {
+      await fetch(FORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+      });
+    } catch (e) { console.warn(e); }
+
+    document.getElementById("success-name").textContent = currentPerson.name;
+    const dlBtn = document.getElementById("btn-download");
+    dlBtn.href = currentPerson.file;
+    document.getElementById("screen-survey").classList.remove("active");
+    document.getElementById("screen-success").classList.add("active");
+  }
+</script>
+</body>
+</html>
